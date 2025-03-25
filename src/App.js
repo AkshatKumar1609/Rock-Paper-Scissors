@@ -2,13 +2,19 @@ import './App.css';
 import Rock from './Images/Rock-emoji.png';
 import Paper from './Images/Paper-emoji.png';
 import Scissor from './Images/Scissor-emoji.png';
-import { use, useState } from 'react';
-
+import {useState,useEffect} from 'react';
 
 function App() {
   let [win,setWin] = useState(0);
   let [lose,setLose] = useState(0);
   let [ties,setTies] = useState(0);
+
+useEffect(() => {
+  setWin(Number(localStorage.getItem("win")) || 0);
+  setLose(Number(localStorage.getItem("lose")) || 0);
+  setTies(Number(localStorage.getItem("ties")) || 0);
+}, []);
+
   let [pickedMove,setPickedMove] = useState('');
   let [result,setResult] = useState('');
 
@@ -23,7 +29,7 @@ function App() {
         <p className="showResult">{result}</p>
         <p className="showPick" dangerouslySetInnerHTML={{ __html: pickedMove }}></p>
         <p className="showScore">Wins : {win}, Lose : {lose}, Ties : {ties}</p>
-        <button onclick="reset()" className="reset">Reset Score</button>
+        <button onClick={reset} className="reset">Reset Score</button>
         <button onclick="autoPlay()" className="auto-play">Auto Play</button>
     </>
   );
@@ -34,26 +40,52 @@ function App() {
     let computerPick = randomNumber < 0.33 ? "Rock" : randomNumber < 0.66 ? "Paper" : "Scissor";
     
     let result = '';
-    if(computerPick == move) result = 'tie';
-    else if(move == 'Rock')
-        if(computerPick == 'Paper') result = 'lost';
+    if(computerPick === move) result = 'tie';
+    else if(move === 'Rock')
+        if(computerPick === 'Paper') result = 'lost';
         else result = 'won';
-    else if(move == 'Paper')
-        if(computerPick == 'Scissor') result = 'lost';
+    else if(move === 'Paper')
+        if(computerPick === 'Scissor') result = 'lost';
         else result = 'won';
-    else if(move == 'Scissor')
-        if(computerPick == 'Rock') result = 'lost';
+    else if(move === 'Scissor')
+        if(computerPick === 'Rock') result = 'lost';
         else result = 'won';
   
-    if(result == 'won') setWin(++win);
-    else if(result == 'lost') setLose(++lose);
-    else setTies(++ties); 
-    // localStorage.setItem('score',JSON.stringify(score));
+        if(result === 'won') {
+          setWin(prevWin => {
+            const newWin = prevWin + 1;
+            localStorage.setItem("win", newWin);  
+            return newWin;
+          });
+        } else if(result === 'lost') {
+          setLose(prevLose => {
+            const newLose = prevLose + 1;
+            localStorage.setItem("lose", newLose);  
+            return newLose;
+          });
+        } else {
+          setTies(prevTies => {
+            const newTies = prevTies + 1;
+            localStorage.setItem("ties", newTies);  
+            return newTies;
+          });
+        }
+    
+    
     setResult(`Game ${result}`)
     
     let moveImg = move === "Rock" ? Rock : move === "Paper" ? Paper : Scissor;
     let computerImg = computerPick === "Rock" ? Rock : computerPick === "Paper" ? Paper : Scissor;
     setPickedMove(`You <img src="${moveImg}" class="move-icon"/> <img src="${computerImg}" class="move-icon"/> Computer`);
+  }
+
+  function reset() {
+    localStorage.setItem("win", 0);
+    localStorage.setItem("lose", 0);
+    localStorage.setItem("ties", 0);
+    setWin(0);
+    setLose(0);
+    setTies(0);
   }
 }
 export default App;
