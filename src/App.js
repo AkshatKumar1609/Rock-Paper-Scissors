@@ -22,19 +22,19 @@ useEffect(() => {
   let [result,setResult] = useState('');
 
   return (
-    <>
+    <div tabIndex="0" onKeyDown={playUsingKeyboard}>
       <p className="title">Rock Paper and Scissors</p>
         <div>
-          <button onClick={() => game('Rock')} className="moveButton"><img src={Rock} className="playerMove"/></button>
-          <button onClick={() => game('Paper')} className="moveButton"><img src={Paper} className="playerMove"/></button>
-          <button onClick={() => game('Scissor')} className="moveButton"><img src={Scissor} className="playerMove"/></button>
+          <button onClick={() => game('Rock')} className="moveButton"><img src={Rock} className="playerMove" alt="Rock"/></button>
+          <button onClick={() => game('Paper')} className="moveButton"><img src={Paper} className="playerMove" alt="Paper"/></button>
+          <button onClick={() => game('Scissor')} className="moveButton"><img src={Scissor} className="playerMove" alt="Scissor"/></button>
         </div>
         <p className="showResult">{result}</p>
         <p className="showPick" dangerouslySetInnerHTML={{ __html: pickedMove }}></p>
         <p className="showScore">Wins : {win}, Lose : {lose}, Ties : {ties}</p>
         <button onClick={reset} className="reset">Reset Score</button>
-        <button onClick={autoPlay} className="auto-play">Auto Play</button>
-    </>
+        <button onClick={autoPlay} className="auto-play">{isAutoPlaying ? "Stop Auto Play" : "Auto Play"}</button>
+    </div>
   );
 
 
@@ -106,5 +106,12 @@ function autoPlay(){
   }
   setIsAutoPlaying(!isAutoPlaying);
 }
+
+function playUsingKeyboard(event){
+  if(event.key == 'r' || event.key == 'R') game('Rock')
+  else if(event.key == 'p' || event.key == 'P') game('Paper') 
+  else if(event.key == 's' || event.key == 'S') game('Scissor') 
+}
+
 }
 export default App;
