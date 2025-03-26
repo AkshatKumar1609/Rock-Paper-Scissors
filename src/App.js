@@ -9,6 +9,9 @@ function App() {
   let [lose,setLose] = useState(0);
   let [ties,setTies] = useState(0);
 
+  let [isAutoPlaying,setIsAutoPlaying]  = useState(false);
+  let [intervalId,setIntervalId] = useState();
+
 useEffect(() => {
   setWin(Number(localStorage.getItem("win")) || 0);
   setLose(Number(localStorage.getItem("lose")) || 0);
@@ -30,7 +33,7 @@ useEffect(() => {
         <p className="showPick" dangerouslySetInnerHTML={{ __html: pickedMove }}></p>
         <p className="showScore">Wins : {win}, Lose : {lose}, Ties : {ties}</p>
         <button onClick={reset} className="reset">Reset Score</button>
-        <button onclick="autoPlay()" className="auto-play">Auto Play</button>
+        <button onClick={autoPlay} className="auto-play">Auto Play</button>
     </>
   );
 
@@ -87,5 +90,21 @@ useEffect(() => {
     setLose(0);
     setTies(0);
   }
+
+function autoPlay(){
+  if(!isAutoPlaying){
+    intervalId = setInterval(function(){
+      const randomNumber = Math.random();
+      let move = randomNumber < 0.33 ? "Rock" : randomNumber < 0.66 ? "Paper" : "Scissor";
+      game(move);
+    },1000);
+    setIntervalId(intervalId);
+  }
+  else{
+    clearInterval(intervalId);
+    setIntervalId(null)
+  }
+  setIsAutoPlaying(!isAutoPlaying);
+}
 }
 export default App;
